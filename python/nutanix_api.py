@@ -19,8 +19,8 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ── Configuration de l'environnement ────────────────────────────────────────
 PRISM_HOST     = "192.168.159.21"
 PRISM_PORT     = 9440
-PRISM_USER     = "admin"
-PRISM_PASSWORD = "Nutanix/4u!"          # à adapter selon ton environnement
+PRISM_USER     = "****"
+PRISM_PASSWORD = "******"          # à adapter selon ton environnement
 
 BASE_URL_V2 = f"https://{PRISM_HOST}:{PRISM_PORT}/api/nutanix/v2.0"
 BASE_URL_V3 = f"https://{PRISM_HOST}:{PRISM_PORT}/api/nutanix/v3"
