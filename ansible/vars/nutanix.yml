@@ -7,9 +7,9 @@
 # ── Prism Element ────────────────────────────────────────────────────────────
 nutanix_host:     "192.168.159.21"
 nutanix_port:     9440
-nutanix_username: "admin"
-nutanix_password: "Nutanix/4u!"       # à adapter selon ton environnement
-validate_certs:   false               # false en lab (certificat auto-signé)
+nutanix_username: "****"
+nutanix_password: "*******"       # à adapter 
+validate_certs:   false               # false en lab 
 
 # ── Cluster ──────────────────────────────────────────────────────────────────
 cluster_name: "NTNX-512e1bdd-A"
