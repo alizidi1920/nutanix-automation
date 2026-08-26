@@ -1,0 +1,32 @@
+---
+# power_off.yml
+# Arrête proprement une VM sur le cluster Nutanix CE (ACPI shutdown).
+#
+# Usage :
+#   ansible-playbook -i ../inventory.yml power_off.yml -e "vm_name=Linux-App01"
+
+- name: Arrêter une VM sur Nutanix CE
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../vars/nutanix.yml
+
+  vars:
+    vm_name: "Linux-App01"     # surcharger avec -e "vm_name=..."
+
+  tasks:
+
+    - name: Arrêter proprement la VM {{ vm_name }} (ACPI)
+      nutanix.ncp.ntnx_vms_power:
+        nutanix_host:     "{{ nutanix_host }}"
+        nutanix_username: "{{ nutanix_username }}"
+        nutanix_password: "{{ nutanix_password }}"
+        nutanix_port:     "{{ nutanix_port }}"
+        validate_certs:   "{{ validate_certs }}"
+        vm_name: "{{ vm_name }}"
+        state: "ACPI_SHUTDOWN"
+      register: power_result
+
+    - name: Résultat
+      debug:
+        msg: "✅ VM '{{ vm_name }}' arrêtée avec succès."

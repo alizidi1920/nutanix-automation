@@ -1,0 +1,10 @@
+---
+# inventory.yml
+# Fichier d'inventaire Ansible pour le cluster Nutanix CE
+# Tous les playbooks s'exécutent en local (connexion directe à l'API Prism)
+
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_python_interpreter: /usr/bin/python3

@@ -1,0 +1,46 @@
+---
+# clone_vm.yml
+# Clone la Golden Image RHEL9 vers une nouvelle VM sur Nutanix CE.
+#
+# Usage :
+#   ansible-playbook -i ../inventory.yml clone_vm.yml
+#   ansible-playbook -i ../inventory.yml clone_vm.yml -e "clone_name=Linux-Clone02"
+
+- name: Cloner la Golden Image Nutanix CE
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../vars/nutanix.yml
+
+  vars:
+    source_vm:  "{{ golden_image_name }}"   # RHEL9-Golden-Final (défini dans vars)
+    clone_name: "Linux-Clone01"
+    ram_gb:     "{{ default_ram_gb }}"
+    vcpus:      "{{ default_vcpus }}"
+
+  tasks:
+
+    - name: Afficher les paramètres du clonage
+      debug:
+        msg:
+          - "Source  : {{ source_vm }}"
+          - "Clone   : {{ clone_name }}"
+          - "RAM     : {{ ram_gb }} Go"
+          - "vCPU    : {{ vcpus }}"
+
+    - name: Cloner la VM
+      nutanix.ncp.ntnx_vms_clone:
+        nutanix_host:     "{{ nutanix_host }}"
+        nutanix_username: "{{ nutanix_username }}"
+        nutanix_password: "{{ nutanix_password }}"
+        nutanix_port:     "{{ nutanix_port }}"
+        validate_certs:   "{{ validate_certs }}"
+        vm_name:    "{{ source_vm }}"
+        clone_name: "{{ clone_name }}"
+        memory_gb:  "{{ ram_gb | int }}"
+        vcpus:      "{{ vcpus | int }}"
+      register: clone_result
+
+    - name: Résultat du clonage
+      debug:
+        msg: "✅ Clone '{{ clone_name }}' créé depuis '{{ source_vm }}'."

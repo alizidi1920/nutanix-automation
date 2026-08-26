@@ -1,0 +1,41 @@
+---
+# delete_vm.yml
+# Supprime une VM du cluster Nutanix CE.
+#
+# Usage :
+#   ansible-playbook -i ../inventory.yml delete_vm.yml -e "vm_name=Linux-New01"
+
+- name: Supprimer une VM sur Nutanix CE
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../vars/nutanix.yml
+
+  vars:
+    vm_name: "Linux-New01"     # surcharger avec -e "vm_name=..."
+
+  tasks:
+
+    - name: Vérifier que le nom de la VM est fourni
+      fail:
+        msg: "❌ Le paramètre 'vm_name' est obligatoire."
+      when: vm_name == ""
+
+    - name: Confirmer la suppression
+      debug:
+        msg: "⚠️  Suppression de la VM : {{ vm_name }}"
+
+    - name: Supprimer la VM
+      nutanix.ncp.ntnx_vms:
+        nutanix_host:     "{{ nutanix_host }}"
+        nutanix_username: "{{ nutanix_username }}"
+        nutanix_password: "{{ nutanix_password }}"
+        nutanix_port:     "{{ nutanix_port }}"
+        validate_certs:   "{{ validate_certs }}"
+        state: absent
+        name:  "{{ vm_name }}"
+      register: delete_result
+
+    - name: Résultat de la suppression
+      debug:
+        msg: "✅ VM '{{ vm_name }}' supprimée avec succès."

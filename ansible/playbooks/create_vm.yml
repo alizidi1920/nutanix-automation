@@ -1,0 +1,56 @@
+---
+# create_vm.yml
+# Crée une nouvelle VM sur le cluster Nutanix CE.
+#
+# Usage :
+#   ansible-playbook -i ../inventory.yml create_vm.yml
+#   ansible-playbook -i ../inventory.yml create_vm.yml -e "vm_name=Linux-New02 ram_gb=4"
+
+- name: Créer une VM sur Nutanix CE
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../vars/nutanix.yml
+
+  vars:
+    vm_name:    "Linux-New01"
+    ram_gb:     "{{ default_ram_gb }}"
+    vcpus:      "{{ default_vcpus }}"
+    disk_gb:    "{{ default_disk_gb }}"
+
+  tasks:
+
+    - name: Afficher les paramètres de création
+      debug:
+        msg:
+          - "VM Name  : {{ vm_name }}"
+          - "RAM      : {{ ram_gb }} Go"
+          - "vCPU     : {{ vcpus }}"
+          - "Disque   : {{ disk_gb }} Go"
+
+    - name: Créer la VM
+      nutanix.ncp.ntnx_vms:
+        nutanix_host:     "{{ nutanix_host }}"
+        nutanix_username: "{{ nutanix_username }}"
+        nutanix_password: "{{ nutanix_password }}"
+        nutanix_port:     "{{ nutanix_port }}"
+        validate_certs:   "{{ validate_certs }}"
+        state: present
+        name:  "{{ vm_name }}"
+        cluster:
+          name: "{{ cluster_name }}"
+        vcpus:     "{{ vcpus | int }}"
+        memory_gb: "{{ ram_gb | int }}"
+        disks:
+          - type: DISK
+            size_gb: "{{ disk_gb | int }}"
+            bus: SCSI
+        networks:
+          - subnet:
+              name: "{{ default_network_name }}"
+            is_connected: true
+      register: create_result
+
+    - name: Résultat de la création
+      debug:
+        msg: "✅ VM '{{ vm_name }}' créée — UUID : {{ create_result.vm_uuid | default('N/A') }}"

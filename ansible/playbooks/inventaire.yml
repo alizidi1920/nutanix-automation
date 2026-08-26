@@ -1,0 +1,39 @@
+---
+# inventaire.yml
+# Liste toutes les VMs du cluster Nutanix et affiche leurs informations.
+#
+# Usage :
+#   ansible-playbook -i ../inventory.yml inventaire.yml
+
+- name: Inventaire des VMs Nutanix CE
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../vars/nutanix.yml
+
+  tasks:
+
+    - name: Récupérer la liste des VMs via l'API Nutanix
+      nutanix.ncp.ntnx_vms_info:
+        nutanix_host:     "{{ nutanix_host }}"
+        nutanix_username: "{{ nutanix_username }}"
+        nutanix_password: "{{ nutanix_password }}"
+        nutanix_port:     "{{ nutanix_port }}"
+        validate_certs:   "{{ validate_certs }}"
+      register: vms_result
+
+    - name: Afficher le nombre total de VMs
+      debug:
+        msg: "Nombre de VMs trouvées : {{ vms_result.response.entities | length }}"
+
+    - name: Afficher les détails de chaque VM
+      debug:
+        msg:
+          - "Nom        : {{ item.spec.name }}"
+          - "UUID       : {{ item.metadata.uuid }}"
+          - "Power      : {{ item.status.resources.power_state }}"
+          - "RAM (MB)   : {{ item.status.resources.memory_size_mib }}"
+          - "vCPU       : {{ item.status.resources.num_vcpus_per_socket * item.status.resources.num_sockets }}"
+      loop: "{{ vms_result.response.entities }}"
+      loop_control:
+        label: "{{ item.spec.name }}"

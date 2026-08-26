@@ -1,0 +1,26 @@
+---
+# vars/nutanix.yml
+# Variables de connexion au cluster Nutanix CE
+# ⚠️  Ne jamais commiter ce fichier avec les vrais mots de passe en production
+#     Utiliser ansible-vault pour chiffrer les credentials sensibles.
+
+# ── Prism Element ────────────────────────────────────────────────────────────
+nutanix_host:     "192.168.159.21"
+nutanix_port:     9440
+nutanix_username: "admin"
+nutanix_password: "Nutanix/4u!"       # à adapter selon ton environnement
+validate_certs:   false               # false en lab (certificat auto-signé)
+
+# ── Cluster ──────────────────────────────────────────────────────────────────
+cluster_name: "NTNX-512e1bdd-A"
+
+# ── Réseau par défaut ────────────────────────────────────────────────────────
+default_network_name: "vlan.0"
+
+# ── Paramètres VM par défaut ─────────────────────────────────────────────────
+default_vcpus:   2
+default_ram_gb:  2
+default_disk_gb: 30
+
+# ── VM de référence (Golden Image) ───────────────────────────────────────────
+golden_image_name: "RHEL9-Golden-Final"

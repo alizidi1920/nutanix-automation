@@ -1,0 +1,32 @@
+---
+# power_on.yml
+# Démarre une VM sur le cluster Nutanix CE.
+#
+# Usage :
+#   ansible-playbook -i ../inventory.yml power_on.yml -e "vm_name=Linux-App01"
+
+- name: Démarrer une VM sur Nutanix CE
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../vars/nutanix.yml
+
+  vars:
+    vm_name: "Linux-App01"     # surcharger avec -e "vm_name=..."
+
+  tasks:
+
+    - name: Démarrer la VM {{ vm_name }}
+      nutanix.ncp.ntnx_vms_power:
+        nutanix_host:     "{{ nutanix_host }}"
+        nutanix_username: "{{ nutanix_username }}"
+        nutanix_password: "{{ nutanix_password }}"
+        nutanix_port:     "{{ nutanix_port }}"
+        validate_certs:   "{{ validate_certs }}"
+        vm_name: "{{ vm_name }}"
+        state: "ON"
+      register: power_result
+
+    - name: Résultat
+      debug:
+        msg: "✅ VM '{{ vm_name }}' démarrée avec succès."

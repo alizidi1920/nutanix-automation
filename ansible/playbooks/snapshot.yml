@@ -1,0 +1,47 @@
+---
+# snapshot.yml
+# Crée un snapshot d'une VM sur le cluster Nutanix CE.
+#
+# Usage :
+#   ansible-playbook -i ../inventory.yml snapshot.yml -e "vm_name=Linux-App01"
+#   ansible-playbook -i ../inventory.yml snapshot.yml -e "vm_name=Linux-App01 snap_name=snap-avant-maj"
+
+- name: Créer un snapshot d'une VM Nutanix CE
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../vars/nutanix.yml
+
+  vars:
+    vm_name:   "Linux-App01"
+    snap_name: "snap-{{ vm_name }}-{{ ansible_date_time.date | default('auto') }}"
+
+  tasks:
+
+    - name: Récupérer la date et l'heure actuelles
+      setup:
+        gather_subset:
+          - date_time
+      when: snap_name is search("auto")
+
+    - name: Afficher les paramètres du snapshot
+      debug:
+        msg:
+          - "VM source      : {{ vm_name }}"
+          - "Nom snapshot   : {{ snap_name }}"
+
+    - name: Créer le snapshot
+      nutanix.ncp.ntnx_vms_snapshots:
+        nutanix_host:     "{{ nutanix_host }}"
+        nutanix_username: "{{ nutanix_username }}"
+        nutanix_password: "{{ nutanix_password }}"
+        nutanix_port:     "{{ nutanix_port }}"
+        validate_certs:   "{{ validate_certs }}"
+        vm_name:       "{{ vm_name }}"
+        snapshot_name: "{{ snap_name }}"
+        state: present
+      register: snap_result
+
+    - name: Résultat
+      debug:
+        msg: "✅ Snapshot '{{ snap_name }}' créé pour la VM '{{ vm_name }}'."
