@@ -4,9 +4,9 @@
 
 Ce projet regroupe l'ensemble des scripts d'automatisation développés dans le cadre du stage
 **"Conception, déploiement et évaluation d'une infrastructure Nutanix Community Edition"**
-réalisé à **Ooredoo Tunisie — Direction Infrastructure & Cloud**.
 
-Il couvre la **Phase 6** du cahier des charges : automatisation des opérations d'administration
+
+Il couvre la **Phase** du : automatisation des opérations d'administration
 via l'API REST Nutanix et les playbooks Ansible.
 
 ---
