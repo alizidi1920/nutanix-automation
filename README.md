@@ -128,5 +128,4 @@ ansible-playbook -i inventory.yml playbooks/delete_vm.yml -e "vm_name=Linux-Clon
 
 **Ali Zidi** — Stagiaire Cloud / DevSecOps  
 ESPRIT Tunis — ArcTIC / DevSecOps  
-Encadrant : M. TEKAYA Ali  
-Période : 13/07/2026 → 13/09/2026
+
